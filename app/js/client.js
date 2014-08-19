@@ -2,7 +2,7 @@ var Note = require('./notes/models/note');
 
 var note = new Note();
 note.set('noteBody', 'wow such note, so words');
-note.set('awesomeFactor', 'ten billion');
+note.set('awesomeFactor', '10 billion');
 
 console.log(note.get('noteBody'));
 console.log(note);

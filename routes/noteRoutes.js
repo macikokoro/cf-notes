@@ -3,13 +3,8 @@ var fs = require('fs');
 
 module.exports = function(app) {
 
-	// app.get('/', function(req, res) {
-	// 	return res.status(200).send('Hi');
-	// });
-
 	var baseUrl = '/api/v_0_0_1/notes';
 
-	// A
 	app.get(baseUrl, function(req, res) {
 		Note.find({}, function(err, notes) {
 			if (err) return res.status(500).json(err);

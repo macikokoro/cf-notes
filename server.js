@@ -6,6 +6,8 @@ var app = express();
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/notes-development');
 
+app.use(express.static(__dirname + (process.env.STATIC_DIR || '/build')));
+
 app.use(bodyparser.json()); // Invoke the middleware
 
 var port = process.env.PORT || 3000;

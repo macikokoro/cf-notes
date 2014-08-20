@@ -1,4 +1,4 @@
-var server = require('../../server'); // Starts your server for you
+var server = require('../../../server'); // Starts your server for you
 var chai = require('chai');
 var chaihttp = require('chai-http'); // needs an npm install --save-dev
 

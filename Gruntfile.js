@@ -24,7 +24,7 @@ module.exports = function(grunt) {
         browserify: {
             dev: {
                 options: {
-                    transform: ['debowerify'],
+                    transform: ['debowerify', 'hbsfy'],
                     debug: true
                 },
                 src: ['app/js/**/*.js'],
@@ -34,15 +34,15 @@ module.exports = function(grunt) {
         nodemon: {
             dev: {
                 script: 'server.js',
-                options: {
-                    ignore: [
-                        'app/js/**/*.js',
-                        'models/**/*.js',
-                        'routes/**/*.js',
-                        'tests/**/*.js'
-                    ],
-                    watch: ['build/**/*']
-                }
+                // options: {
+                //     ignore: [
+                //         'app/js/**/*.js',
+                //         'models/**/*.js',
+                //         'routes/**/*.js',
+                //         'tests/**/*.js'
+                //     ],
+                //     watch: ['build/**/*']
+                // }
             }
         },
         watch: {
@@ -59,10 +59,10 @@ module.exports = function(grunt) {
                     'clean:dev',
                     'browserify:dev',
                     'copy:dev'
-                ],
-                options: {
-                  livereload: true
-                }
+                ]
+                // options: {
+                //   livereload: true
+                // }
             }
         },
         concurrent: {
@@ -76,6 +76,7 @@ module.exports = function(grunt) {
         'clean:dev', 
         'browserify:dev', 
         'copy:dev',
-        'concurrent' 
+        // 'concurrent' 
+        'watch'
         ]);
 };

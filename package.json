@@ -22,6 +22,7 @@
     "mongoose": "^3.8.14"
   },
   "devDependencies": {
+    "backbone": "^1.1.2",
     "chai-http": "^0.4.0",
     "debowerify": "^0.8.1",
     "grunt": "^0.4.5",
@@ -30,6 +31,10 @@
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-nodemon": "*"
+    "grunt-nodemon": "*",
+    "handlebars": "^2.0.0-alpha.4",
+    "hbsfy": "^2.0.0",
+    "jquery": "^2.1.1",
+    "sinon": "^1.10.3"
   }
 }

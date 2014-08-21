@@ -12,16 +12,18 @@ module.exports = Backbone.View.extend({
 	initialize: function() {
 		this.collection.on('add', this.addNote, this);
 		this.collection.on('reset', this.addAll, this);
+		this.render();
 	},
 	addNote: function(note) {
 		var noteView = new NoteView({model: note});
-		this.$el.children('#notes').append(noteView.$el);
+		this.$el.append(noteView.$el);
 	},
 	addAll: function(note) {
-		this.$el('#notes').empty(); // Blank out the current $el tag
+		// this.$el('#notes').empty(); // Blank out the current $el tag
 		this.collection.forEach(this.addNote);
 	},
 	render: function() {
+		console.log('Render called');
 		var template = require('../templates/notes-collection.hbs');
 		this.$el.html(template());
 		this.addAll();

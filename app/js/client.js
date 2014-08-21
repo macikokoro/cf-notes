@@ -21,7 +21,7 @@ note2.save();
 
 var notesCollection = new NotesCollection(); // Again make new instance
 var notesCollectionView = new NotesCollectionView({collection: notesCollection});
-notesCollection.fetch();
+notesCollection.fetch(); // This is async; if you want to do something right after, use .done(), which--BTW--executes regardless of whether a promise returns true or false
 $('#notes').html(notesCollectionView.$el);
 
 

@@ -4,13 +4,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-nodemon');
+    grunt.loadNpmTasks('grunt-mocha');
     grunt.loadNpmTasks('grunt-concurrent');
 
     grunt.initConfig({
         clean: {
             dev: {
                 src: ['build/']
-            } 
+            }
         },
         copy: {
             dev: {
@@ -18,7 +19,15 @@ module.exports = function(grunt) {
                 cwd: 'app/',
                 src: ['*.html', '*.css'],
                 dest: 'build/',
-                filter: 'isFile' 
+                filter: 'isFile'
+            }
+        },
+        mocha: {
+            backbonetest: {
+                src: ['tests/test.html'],
+                options: {
+                    run: true
+                }
             }
         },
         browserify: {
@@ -28,7 +37,15 @@ module.exports = function(grunt) {
                     debug: true
                 },
                 src: ['app/js/**/*.js'],
-                dest: 'build/bundle.js' 
+                dest: 'build/bundle.js'
+            },
+            test: {
+                options: {
+                    transform: ['hbsfy', 'debowerify'],
+                    debug: true
+                },
+                src: ['tests/mocha/backbone/**/*.js'],
+                dest: 'tests/testbundle.js'
             }
         },
         nodemon: {
@@ -73,10 +90,14 @@ module.exports = function(grunt) {
         }
     });
     grunt.registerTask('build:dev', [
-        'clean:dev', 
-        'browserify:dev', 
+        'clean:dev',
+        'browserify:dev',
         'copy:dev',
-        // 'concurrent' 
+        // 'concurrent'
         'watch'
+        ]);
+    grunt.registerTask('backbone:test', [
+        'browserify:test',
+        'mocha:backbonetest'
         ]);
 };

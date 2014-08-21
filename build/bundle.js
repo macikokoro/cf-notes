@@ -12146,31 +12146,42 @@ return jQuery;
 }).call(this);
 
 },{}],4:[function(require,module,exports){
-var Note = require('./notes/models/note');
+var Backbone = require("./../bower_components/backbone/backbone.js");
 var $ = require("./../bower_components/jquery/dist/jquery.js");
-var BasicNoteView = require('./notes/views/note-view'); // Bring in constructor
-var NotesCollection = require('./notes/collections/notes-collection');
-var NotesCollectionView = require('./notes/views/notes-collection-view')
+Backbone.$ = $;
 
-// var noteView = new BasicNoteView({model: note}); // Initialize from constructor
-// $('#notes').html(noteView.$el);
+var NotesRouter = require('./notes/routers/notes-router');
+var notesRouter = new NotesRouter();
 
-
-
-var note = new Note();
-note.set('noteBody', 'wow such note, so words');
-note.set('awesomeFactor', '10 billion');
-note.save();
-
-var note2 = new Note();
-note.set('noteBody', 'B-flat');
-note2.save();
+Backbone.history.start(); // Allows for fwd and back
+notesRouter.navigate('/notes', {trigger: true});
 
 
-var notesCollection = new NotesCollection(); // Again make new instance
-var notesCollectionView = new NotesCollectionView({collection: notesCollection});
-notesCollection.fetch(); // This is async; if you want to do something right after, use .done(), which--BTW--executes regardless of whether a promise returns true or false
-$('#notes').html(notesCollectionView.$el);
+// var Note = require('./notes/models/note');
+// var $ = require('jquery');
+// var BasicNoteView = require('./notes/views/note-view'); // Bring in constructor
+// var NotesCollection = require('./notes/collections/notes-collection');
+// var NotesCollectionView = require('./notes/views/notes-collection-view')
+
+// // var noteView = new BasicNoteView({model: note}); // Initialize from constructor
+// // $('#notes').html(noteView.$el);
+
+// console.log('hai');
+
+// var note = new Note();
+// note.set('noteBody', 'WOW such note, so words');
+// note.set('awesomeFactor', '10 billion');
+// note.save();
+
+// var note2 = new Note();
+// note.set('noteBody', 'B-flat');
+// note2.save();
+
+
+// var notesCollection = new NotesCollection(); // Again make new instance
+// var notesCollectionView = new NotesCollectionView({collection: notesCollection});
+// notesCollection.fetch(); // This is async; if you want to do something right after, use .done(), which--BTW--executes regardless of whether a promise returns true or false
+// $('#notes').html(notesCollectionView.$el);
 
 
 
@@ -12191,7 +12202,7 @@ $('#notes').html(notesCollectionView.$el);
 // 		console.log(err);
 // 	}
 // });
-},{"./../bower_components/jquery/dist/jquery.js":2,"./notes/collections/notes-collection":5,"./notes/models/note":6,"./notes/views/note-view":9,"./notes/views/notes-collection-view":10}],5:[function(require,module,exports){
+},{"./../bower_components/backbone/backbone.js":1,"./../bower_components/jquery/dist/jquery.js":2,"./notes/routers/notes-router":7}],5:[function(require,module,exports){
 var Backbone = require("./../../../bower_components/backbone/backbone.js");
 var $ = require("./../../../bower_components/jquery/dist/jquery.js");
 Backbone.$ = $;
@@ -12217,6 +12228,42 @@ var Note = Backbone.Model.extend({
 
 module.exports = Note;
 },{"./../../../bower_components/backbone/backbone.js":1,"./../../../bower_components/jquery/dist/jquery.js":2}],7:[function(require,module,exports){
+var Backbone = require("./../../../bower_components/backbone/backbone.js");
+var $ = require("./../../../bower_components/jquery/dist/jquery.js");
+Backbone.$ = $;
+var Note = require('../models/note');
+var NoteView = require('../views/note-view');
+var NoteFormView = require('../views/note-form-view');
+var NotesCollection = require('../collections/notes-collection');
+var NotesCollectionView = require('../views/notes-collection-view');
+
+module.exports = Backbone.Router.extend({
+	routes: {
+		"notes": "index",
+		"notes/new": "create",
+		"notes/test/:id": "test"
+	},
+	initialize: function() {
+		// this.notes = new NotesCollection();
+		// this.notes.fetch();
+	},
+	index: function() {
+		// var self = this; // this refers to router as a whole
+		this.notes = new NotesCollection(); // Collection scoped to router, so everyone can see it
+		this.notes.fetch();
+		var notesView = new NotesCollectionView({collection: this.notes});
+		$('#content').html(notesView.$el);
+	},
+	create: function() {
+		var newNote = new Note();
+		var formView = new NoteFormView({model: newNote});
+		$('#content').html(formView.$el);
+	},
+	test: function(id) {
+		console.log(id);
+	}
+});
+},{"../collections/notes-collection":5,"../models/note":6,"../views/note-form-view":11,"../views/note-view":12,"../views/notes-collection-view":13,"./../../../bower_components/backbone/backbone.js":1,"./../../../bower_components/jquery/dist/jquery.js":2}],8:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template({"compiler":[5,">= 2.0.0"],"main":function(depth0,helpers,partials,data) {
@@ -12226,14 +12273,52 @@ module.exports = Handlebars.template({"compiler":[5,">= 2.0.0"],"main":function(
     + "</p>";
 },"useData":true});
 
-},{"hbsfy/runtime":18}],8:[function(require,module,exports){
+},{"hbsfy/runtime":21}],9:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var Handlebars = require('hbsfy/runtime');
+module.exports = Handlebars.template({"compiler":[5,">= 2.0.0"],"main":function(depth0,helpers,partials,data) {
+  return "<form class=\"noteForm\" action=\"#\">\n	<input type=\"text\" name=\"noteBody\" placeholder=\"New note\">\n	</input>\n	<button>\n		Submit\n	</button>\n</form>";
+  },"useData":true});
+
+},{"hbsfy/runtime":21}],10:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template({"compiler":[5,">= 2.0.0"],"main":function(depth0,helpers,partials,data) {
   return "<h3>Notes collection:</h3>\n<div id=\"notes\"></div>";
   },"useData":true});
 
-},{"hbsfy/runtime":18}],9:[function(require,module,exports){
+},{"hbsfy/runtime":21}],11:[function(require,module,exports){
+var Backbone = require("./../../../bower_components/backbone/backbone.js");
+var $ = require("./../../../bower_components/jquery/dist/jquery.js");
+Backbone.$ = $;
+
+module.exports = Backbone.View.extend({
+	events: {
+		'submit': 'save' // Since there's only one submit in the form
+	},
+	initialize: function() {
+		this.render();
+	},
+	render: function() {
+		var template = require('../templates/note-form.hbs');
+		var data = this.model.attributes;
+		this.$el.html(template(data));
+		return this;
+	},
+	save: function(e) { // <=  e is the event that triggered it
+		e.preventDefault();
+		var newNoteBody = this.$('input[name=noteBody]').val();
+		this.model.save({noteBody: newNoteBody}, {
+			success: function() {
+				Backbone.history.navigate('notes', {trigger: true}); // Necessary to actually *go* to the page
+			},
+			error: function() {
+				console.log('error');
+			}
+		})
+	}
+});
+},{"../templates/note-form.hbs":9,"./../../../bower_components/backbone/backbone.js":1,"./../../../bower_components/jquery/dist/jquery.js":2}],12:[function(require,module,exports){
 var Backbone = require("./../../../bower_components/backbone/backbone.js");
 var $ = require("./../../../bower_components/jquery/dist/jquery.js");
 Backbone.$ = $; // Set the Backbone jQuery to *our* jQuery
@@ -12253,7 +12338,7 @@ var NoteView = Backbone.View.extend({
 });
 
 module.exports = NoteView;
-},{"../templates/basic-note-template.hbs":7,"./../../../bower_components/backbone/backbone.js":1,"./../../../bower_components/jquery/dist/jquery.js":2}],10:[function(require,module,exports){
+},{"../templates/basic-note-template.hbs":8,"./../../../bower_components/backbone/backbone.js":1,"./../../../bower_components/jquery/dist/jquery.js":2}],13:[function(require,module,exports){
 var Backbone = require("./../../../bower_components/backbone/backbone.js");
 var $ = require("./../../../bower_components/jquery/dist/jquery.js");
 Backbone.$ = $;
@@ -12268,13 +12353,15 @@ module.exports = Backbone.View.extend({
 	initialize: function() {
 		this.collection.on('add', this.addNote, this);
 		this.collection.on('reset', this.addAll, this);
+		this.render();
 	},
 	addNote: function(note) {
 		var noteView = new NoteView({model: note});
-		this.$el.append(noteView.$el);
+		this.$el.children('#notes').append(noteView.$el);
 	},
 	addAll: function(note) {
-		// this.$el('#notes').empty(); // Blank out the current $el tag
+		// this.$el.children('#notes').html(''); // Blank out the current $el tag
+		$('#notes').html('');
 		this.collection.forEach(this.addNote);
 	},
 	render: function() {
@@ -12284,7 +12371,7 @@ module.exports = Backbone.View.extend({
 		this.addAll();
 	}
 });
-},{"../collections/notes-collection":5,"../models/note":6,"../templates/notes-collection.hbs":8,"./../../../bower_components/backbone/backbone.js":1,"./../../../bower_components/jquery/dist/jquery.js":2,"./note-view":9}],11:[function(require,module,exports){
+},{"../collections/notes-collection":5,"../models/note":6,"../templates/notes-collection.hbs":10,"./../../../bower_components/backbone/backbone.js":1,"./../../../bower_components/jquery/dist/jquery.js":2,"./note-view":12}],14:[function(require,module,exports){
 "use strict";
 /*globals Handlebars: true */
 var base = require("./handlebars/base");
@@ -12317,7 +12404,7 @@ var Handlebars = create();
 Handlebars.create = create;
 
 exports["default"] = Handlebars;
-},{"./handlebars/base":12,"./handlebars/exception":13,"./handlebars/runtime":14,"./handlebars/safe-string":15,"./handlebars/utils":16}],12:[function(require,module,exports){
+},{"./handlebars/base":15,"./handlebars/exception":16,"./handlebars/runtime":17,"./handlebars/safe-string":18,"./handlebars/utils":19}],15:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -12550,7 +12637,7 @@ exports.log = log;var createFrame = function(object) {
   return frame;
 };
 exports.createFrame = createFrame;
-},{"./exception":13,"./utils":16}],13:[function(require,module,exports){
+},{"./exception":16,"./utils":19}],16:[function(require,module,exports){
 "use strict";
 
 var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
@@ -12579,7 +12666,7 @@ function Exception(message, node) {
 Exception.prototype = new Error();
 
 exports["default"] = Exception;
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -12753,7 +12840,7 @@ exports.noop = noop;function initData(context, data) {
   }
   return data;
 }
-},{"./base":12,"./exception":13,"./utils":16}],15:[function(require,module,exports){
+},{"./base":15,"./exception":16,"./utils":19}],18:[function(require,module,exports){
 "use strict";
 // Build out our basic SafeString type
 function SafeString(string) {
@@ -12765,7 +12852,7 @@ SafeString.prototype.toString = function() {
 };
 
 exports["default"] = SafeString;
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 /*jshint -W004 */
 var SafeString = require("./safe-string")["default"];
@@ -12850,12 +12937,12 @@ exports.isEmpty = isEmpty;function appendContextPath(contextPath, id) {
 }
 
 exports.appendContextPath = appendContextPath;
-},{"./safe-string":15}],17:[function(require,module,exports){
+},{"./safe-string":18}],20:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime');
 
-},{"./dist/cjs/handlebars.runtime":11}],18:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":14}],21:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":17}]},{},[4,5,6,9,10]);
+},{"handlebars/runtime":20}]},{},[4,5,6,7,11,12,13]);
